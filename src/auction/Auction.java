@@ -76,12 +76,12 @@ public class Auction implements Runnable{
     public void run(){
         if(this.isConflict()){
             System.out.println("There is a conflict of interests! Auction is now cancelled.");
-            try{
-                CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Checked for conflicts, " + LocalTime.now() + "\n", true);
-            } catch (IOException e){
-                System.out.println("Audit service failed to find file.");
-            }
             return;
+        }
+        try{
+            CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Checked for conflicts, " + LocalTime.now() + "\n", true);
+        } catch (IOException e){
+            System.out.println("Audit service failed to find file.");
         }
         System.out.println("Auction " + this.name + " is now starting!\n");
         try{
