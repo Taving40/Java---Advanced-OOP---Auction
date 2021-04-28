@@ -1,19 +1,18 @@
 package auction;
 
-import java.util.Scanner;
+import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        //TODO:
+    public static void main(String[] args) throws IOException {
 
-        Item a = new Item();
+    AuctionService service = new AuctionService();
 
-        Evaluator e = new Evaluator("asd", "asd", "asd@asd.com");
+    service.runAuction();
+    service.displayLoggedAuctions();
+    service.makeNewAuction();
+    service.displayScheduledAuctions();
 
-        e.appraiseItem(a);
-
-        System.out.println(a.getStartingPrice());
 
 
     }

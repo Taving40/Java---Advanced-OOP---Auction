@@ -9,8 +9,16 @@ public class Item {
     private LocalDate added, sold;
     private Evaluator e;
     private int highest_bid;
+    private String assigned_auction;
 
     public Item(){
+        this.added = LocalDate.now();
+        this.highest_bid = 0;
+    }
+
+    public Item(String name, String description){
+        this.name = name;
+        this.description = description;
         this.added = LocalDate.now();
         this.highest_bid = 0;
     }
@@ -101,5 +109,13 @@ public class Item {
 
     public void setE(Evaluator e) {
         this.e = e;
+    }
+
+    public void setAuction(String auc){
+        this.assigned_auction = auc;
+    }
+
+    public String getAuction(){
+        return this.assigned_auction;
     }
 }

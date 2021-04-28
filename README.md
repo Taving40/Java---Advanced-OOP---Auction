@@ -17,16 +17,14 @@ Object list:
 Object actions:
 * Allow Users to log in
 * Let Buyers participate in Auction
-* Let buyer bid on items
-* Let Bids be recorded during an Auction
-* Start Auction TODO
+* Let Buyer bid on items
+* Record bids made during an Auction
+* Display scheduled auctions
+* Check if Auction has conflict of interests
+* Start Auction
+* Record Auction's log to AuctionHistoryLogs
 * Add Item to Auction
-* See Scheduled Auctions
-* See specific Auction (look-up in AuctionHistoryLogs)
-* See bids made for specific item during an Auction 
 * Let Evaluator appraise Item
 * Check if Item is appraised and can be auctioned
-* See details about Item
-* Let User login
-* Show Inventory
+* Display Buyer related auctions
 * Look-up Item in Inventory

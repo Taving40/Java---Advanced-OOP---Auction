@@ -1,73 +1,184 @@
 package auction;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
+import java.time.*;
 
-public class Auction {
+public class Auction implements Runnable{
     //TODO:
     // Start method (iterate over items updating current_item, wait for Buyers to make bids and print out each new bid while updating item's highest_bid, close after internal timer and notify users)
 
     private String name;
-    private Set<Buyer> buyers;
-    private Set<Item> items;
-    private AuctionHistory log;
-    private Item current_item;
+    private Set<User> involved = new HashSet<>();
+    private Set<String> conflicts = new HashSet<>();
+    private Set<Item> items = new HashSet<>();
+    private AuctionHistory log = new AuctionHistory();
+    private Item currentItem;
+    private Boolean bid_flag = false;
+
+    public Auction(){}
+
+    public Auction(String name){
+        this.name = name;
+    }
 
     public Auction(String name, Set<Item> items){
         this.name = name;
         this.items = items;
+        for(Item i: items){
+            for(String conflictName: i.getE().getConflicts()){
+                conflicts.add(conflictName);
+            }
+        }
     }
 
-    public Auction(String name, Set<Buyer> buyers, Set<Item> items){
+    public Auction(String name, Set<User> buyers, Set<Item> items){
         this.name = name;
         this.items = items;
-        this.buyers = buyers;
+        this.involved = involved;
+        for(Item i: items){
+            for(String conflictName: i.getE().getConflicts()){
+                conflicts.add(conflictName);
+            }
+        }
     }
 
-    public Auction(String name, Set<Buyer> buyers, Set<Item> items, AuctionHistory log){
+    public Auction(String name, Set<User> involved, Set<Item> items, AuctionHistory log){
         this.name = name;
         this.items = items;
-        this.buyers = buyers;
+        this.involved = involved;
         this.log = log;
     }
 
-    public void start(){
-        //TODO
-        return;
+    public Boolean request_bid(){
+        if(bid_flag)
+            return false;
+        else{
+            bid_flag = true;
+            return true;
+        }
+    }
+
+    public void finish_bid(){
+        if(bid_flag)
+            bid_flag = false;
+        else
+            System.out.println("Cannot finish bid that was not started!");
+    }
+
+    public Boolean get_flag(){
+        return bid_flag;
+    }
+
+    @Override
+    public void run(){
+        if(this.isConflict()){
+            System.out.println("There is a conflict of interests! Auction is now cancelled.");
+            try{
+                CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Checked for conflicts, " + LocalTime.now() + "\n", true);
+            } catch (IOException e){
+                System.out.println("Audit service failed to find file.");
+            }
+            return;
+        }
+        System.out.println("Auction " + this.name + " is now starting!\n");
+        try{
+            CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Started auction, " + LocalTime.now() + "\n", true);
+        } catch (IOException e){
+            System.out.println("Audit service failed to find file.");
+        }
+        for(Item x: items){
+            currentItem = x;
+            System.out.println("Start bidding on " + x.getName() + ". Starting bid is " + x.getStartingPrice());
+            Instant start = Instant.now();
+            long print_flag = 2;
+            while(true){
+                Instant maybe_finish = Instant.now();
+                long elapsed_time = Duration.between(start, maybe_finish).toSeconds();
+                if(elapsed_time == print_flag){
+                    if(log.isEmpty() || log.getLastBid().getItem() != x.getName())
+                        System.out.println("No current bids!\n");
+                    else
+                        System.out.println("Highest bid is: " + log.getLastBid().getAmount() + "\n");
+                    print_flag += 2;
+                }
+                if (elapsed_time > 10){
+                    break;
+                }
+            }
+            if(log.isEmpty() || log.getLastBid().getItem() != x.getName())
+                System.out.println("Item " + x.getName() + " wasn't bid on.\n");
+            else
+                System.out.println("Bidding on " + x.getName() + " has stopped. Winner is " + log.getLastBid() + "\n");
+        }
+
+        System.out.println("\nAuction " + this.name + " is now finished.\n");
     }
 
     private Boolean canBeAuctioned(Item a){
+        try{
+            CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Checked if item is auctionable, " + LocalTime.now() + "\n", true);
+        } catch (IOException e){
+            System.out.println("Audit service failed to find file.");
+        }
         if(a.getEvaluator() != null)
             return true;
         return false;
     }
 
-    public void addBuyer(Buyer b){
-        this.buyers.add(b);
+    public void addInvolved(User i){
+        this.involved.add(i);
     }
 
     public void addItem(Item i){
         if (canBeAuctioned(i)){
             this.items.add(i);
+            i.setAuction(this.getName());
+            for(String conflictName: i.getE().getConflicts()){
+                conflicts.add(conflictName);
+            }
+            try{
+                CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Added item to auction, " + LocalTime.now() + "\n", true);
+            } catch (IOException e){
+                System.out.println("Audit service failed to find file.");
+            }
         }
         else {
             System.out.println("Please provide an item that has been appraised and is ready to be auctioned.");
         }
     }
 
-    public void recordBid(Bid b){
+    public synchronized void recordBid(Bid b){
         log.recordBid(b);
     }
 
-    public Set<Buyer> getBuyers() {
-        return this.buyers;
+    public Set<User> getInvolved() {
+        return this.involved;
+    }
+
+    public Boolean conflictsWith(Buyer b){
+        if(conflicts.contains(b.getUsername()))
+            return true;
+        return false;
+    }
+
+    public Boolean isConflict(){
+        for(User u: involved){
+            if(conflicts.contains(u.getUsername())){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Set<Item> getItems() {
         return this.items;
     }
 
-    public void setBuyers(Set<Buyer> buyers) {
-        this.buyers = buyers;
+    public void setInvolved(Set<User> involved) {
+        this.involved = involved;
     }
 
     public void setItems(Set<Item> items) {
@@ -82,22 +193,26 @@ public class Auction {
         return name;
     }
 
-    public AuctionHistory getLog() {
+    public synchronized AuctionHistory getLog() {
         return log;
     }
 
-    public Item getCurrentItem(){
-        return current_item;
+    public synchronized Item getCurrentItem() {
+        return currentItem;
     }
+
+    public synchronized void setCurrentItem(Item currentItem) {
+        this.currentItem = currentItem;
+    }
+
 
     @Override
     public String toString() {
         return "Auction{" +
                 "name='" + name + '\'' +
-                ", buyers=" + buyers +
+                ", involved=" + involved +
                 ", items=" + items +
                 ", log=" + log +
-                ", current_item=" + current_item +
                 '}';
     }
 }

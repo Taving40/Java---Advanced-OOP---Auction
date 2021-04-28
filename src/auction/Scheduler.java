@@ -58,4 +58,19 @@ public class Scheduler {
         times.remove(localDate);
     }
 
+    public void setPlanner(ArrayList<Auction> planner) {
+        this.planner = planner;
+    }
+
+    public ArrayList<Auction> getPlanner() {
+        return planner;
+    }
+
+    public ArrayList<LocalDate> getTimes() {
+        return times;
+    }
+
+    public void setTimes(ArrayList<LocalDate> times) {
+        this.times = times;
+    }
 }

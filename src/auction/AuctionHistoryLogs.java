@@ -1,17 +1,15 @@
 package auction;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class AuctionHistoryLogs {
-    //TODO:
-    // Log all AuctionHistory objects in here with some sort of ids, and datestamps
-    // Look-up method (using date or id)
-
-
-    private ArrayList<AuctionHistory> logs;
-    private ArrayList<LocalDate> timestamps; //date added
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<AuctionHistory> logs = new ArrayList<>();
+    private ArrayList<LocalDate> timestamps = new ArrayList<>();
     private static AuctionHistoryLogs single_instance = null;
 
     public AuctionHistoryLogs(){}
@@ -20,17 +18,18 @@ public class AuctionHistoryLogs {
     {
         if (single_instance == null)
             single_instance = new AuctionHistoryLogs();
-
         return single_instance;
     }
 
     public void recordAuction(Auction auction){
+        try{
+            CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Logged auction, " + LocalTime.now() + "\n", true);
+        } catch (IOException e){
+            System.out.println("Audit service failed to find file.");
+        }
         logs.add(auction.getLog());
         timestamps.add(LocalDate.now());
-    }
-
-    public boolean isUserInvolved(User u, Integer index, Inventory inv){
-        return logs.get(index).lookUpUser(u, inv);
+        names.add(auction.getName());
     }
 
     public AuctionHistory at(Integer index){
@@ -48,10 +47,22 @@ public class AuctionHistoryLogs {
         int auction_index = timestamps.indexOf(localDate);
         if(auction_index == -1)
             return null;
-
-
         return logs.get(auction_index);
 
     }
 
+    public AuctionHistory lookUpLogByName(String name){
+        int auction_index = names.indexOf(name);
+        if(auction_index == -1)
+            return null;
+        return logs.get(auction_index);
+    }
+
+    public ArrayList<String> getNames(){
+        return names;
+    }
+
+    public ArrayList<LocalDate> getTimestamps() {
+        return timestamps;
+    }
 }

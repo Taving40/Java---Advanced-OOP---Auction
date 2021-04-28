@@ -1,5 +1,7 @@
 package auction;
 
+import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -35,6 +37,7 @@ public class User {
     }
 
     public void logIn(){
+        System.out.println("Hello, " + this.username + "!");
         Scanner read = new Scanner(System.in);
         int i;
         for(i = 1; i <= 3; i++){
@@ -42,7 +45,12 @@ public class User {
             String temp = read.nextLine();
             if (temp.equals(this.password)){
                 this.isLoggedIn = true;
-                break;
+                try{
+                    CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Login, " + LocalTime.now() + "\n", true);
+                } catch (IOException e){
+                    System.out.println("Audit service failed to find file.");
+                }
+                return;
             }
             else{
                 System.out.println("Login failed, try again.");
@@ -54,6 +62,10 @@ public class User {
             this.isLocked = true;
         }
 
+    }
+
+    public void logOut(){
+        this.isLoggedIn = false;
     }
 
     public boolean isLoggedIn() {
@@ -70,10 +82,6 @@ public class User {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        isLoggedIn = loggedIn;
     }
 
     public boolean isAllowed(){

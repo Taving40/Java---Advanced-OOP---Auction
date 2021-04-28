@@ -1,5 +1,7 @@
 package auction;
 
+import java.io.IOException;
+import java.time.LocalTime;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -20,7 +22,7 @@ public class Evaluator extends User{
         this.conflicts = conflicts;
     }
 
-    public List<String> seeConflicts(){
+    public List<String> getConflicts(){
         return this.conflicts;
     }
 
@@ -29,9 +31,6 @@ public class Evaluator extends User{
     }
 
     public void appraiseItem(Item i){
-
-        //TODO:
-        // check if item is scheduled for any auction where a Conflict user is present and forbid evaluator from appraising
 
         Scanner read = new Scanner(System.in);
         System.out.println("Current item properties: " + i.toString());
@@ -60,12 +59,18 @@ public class Evaluator extends User{
         }
 
         i.setStartingPrice(i.getAppraisedPrice()-(i.getAppraisedPrice()/10));
+        i.setE(this);
+        try{
+            CSVHandler.writeCSVAudit("src\\csv\\audit.csv", "Appraised item, " + LocalTime.now() + "\n", true);
+        } catch (IOException e){
+            System.out.println("Audit service failed to find file.");
+        }
     }
 
     @Override
     public String toString() {
-        return "Evaluator{" +
-                "conflicts=" + conflicts +
+        return "Evaluator: " + this.getUsername() +
+                "\nconflicts =" + conflicts +
                 '}';
     }
 }
