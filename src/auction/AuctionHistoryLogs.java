@@ -10,15 +10,15 @@ public class AuctionHistoryLogs {
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<AuctionHistory> logs = new ArrayList<>();
     private ArrayList<LocalDate> timestamps = new ArrayList<>();
-    private static AuctionHistoryLogs single_instance = null;
+    private static AuctionHistoryLogs singleInstance = null;
 
     public AuctionHistoryLogs(){}
 
     public static AuctionHistoryLogs getInstance()
     {
-        if (single_instance == null)
-            single_instance = new AuctionHistoryLogs();
-        return single_instance;
+        if (singleInstance == null)
+            singleInstance = new AuctionHistoryLogs();
+        return singleInstance;
     }
 
     public void recordAuction(Auction auction){

@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class Inventory {
 
     private ArrayList<Item> items = new ArrayList<Item>();
-    private static Inventory single_instance = null;
+    private static Inventory singleInstance = null;
 
     public static Inventory getInstance(){
-        if (single_instance == null)
-            single_instance = new Inventory();
-        return single_instance;
+        if (singleInstance == null)
+            singleInstance = new Inventory();
+        return singleInstance;
     }
 
     public boolean isInInventory(String name){

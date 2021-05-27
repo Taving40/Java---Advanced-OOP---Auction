@@ -5,32 +5,32 @@ import java.time.LocalDate;
 public class Item {
 
     private String name, description;
-    private int starting_price, appraised_price;
+    private int startingPrice, appraisedPrice;
     private LocalDate added, sold;
     private Evaluator e;
-    private int highest_bid;
-    private String assigned_auction;
+    private int highestBid;
+    private String assignedAuction;
 
     public Item(){
         this.added = LocalDate.now();
-        this.highest_bid = 0;
+        this.highestBid = 0;
     }
 
     public Item(String name, String description){
         this.name = name;
         this.description = description;
         this.added = LocalDate.now();
-        this.highest_bid = 0;
+        this.highestBid = 0;
     }
 
-    public Item(String name, String description, int appraised_price, Evaluator e){
+    public Item(String name, String description, int appraisedPrice, Evaluator e){
         this.name = name;
         this.description = description;
         this.added = LocalDate.now();
         this.e = e;
-        this.appraised_price = appraised_price;
-        this.starting_price = (int)(appraised_price-appraised_price/10);
-        this.highest_bid = 0;
+        this.appraisedPrice = appraisedPrice;
+        this.startingPrice = (int)(appraisedPrice - appraisedPrice /10);
+        this.highestBid = 0;
     }
 
     @Override
@@ -38,17 +38,17 @@ public class Item {
         return "Item{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", starting_price=" + starting_price +
-                ", appraised_price=" + appraised_price +
+                ", starting_price=" + startingPrice +
+                ", appraised_price=" + appraisedPrice +
                 ", added=" + added +
                 ", sold=" + sold +
                 ", e=" + e +
-                ", highest_bid=" + highest_bid +
+                ", highest_bid=" + highestBid +
                 '}';
     }
 
     public int getHighestBid() {
-        return highest_bid;
+        return highestBid;
     }
 
     public String getEvaluator(){
@@ -56,7 +56,7 @@ public class Item {
     }
 
     public int getAppraisedPrice() {
-        return this.appraised_price;
+        return this.appraisedPrice;
     }
 
     public String getName() {
@@ -64,7 +64,7 @@ public class Item {
     }
 
     public int getStartingPrice() {
-        return this.starting_price;
+        return this.startingPrice;
     }
 
     public LocalDate getAdded() {
@@ -72,7 +72,7 @@ public class Item {
     }
 
     public void setHighestBid(int highest_bid) {
-        this.highest_bid = highest_bid;
+        this.highestBid = highest_bid;
     }
 
     public void setSold(LocalDate sold) {
@@ -80,7 +80,7 @@ public class Item {
     }
 
     public void setAppraisedPrice(int appraised_price) {
-        this.appraised_price = appraised_price;
+        this.appraisedPrice = appraised_price;
     }
 
     public void setName(String name) {
@@ -96,7 +96,7 @@ public class Item {
     }
 
     public void setStartingPrice(int starting_price) {
-        this.starting_price = starting_price;
+        this.startingPrice = starting_price;
     }
 
     public String getDescription() {
@@ -112,10 +112,10 @@ public class Item {
     }
 
     public void setAuction(String auc){
-        this.assigned_auction = auc;
+        this.assignedAuction = auc;
     }
 
     public String getAuction(){
-        return this.assigned_auction;
+        return this.assignedAuction;
     }
 }

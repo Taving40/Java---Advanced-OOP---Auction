@@ -1,14 +1,11 @@
 package auction;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.time.*;
 
 public class Auction implements Runnable{
-    //TODO:
-    // Start method (iterate over items updating current_item, wait for Buyers to make bids and print out each new bid while updating item's highest_bid, close after internal timer and notify users)
 
     private String name;
     private Set<User> involved = new HashSet<>();
@@ -16,7 +13,7 @@ public class Auction implements Runnable{
     private Set<Item> items = new HashSet<>();
     private AuctionHistory log = new AuctionHistory();
     private Item currentItem;
-    private Boolean bid_flag = false;
+    private Boolean bidFlag = false;
 
     public Auction(){}
 
@@ -53,23 +50,23 @@ public class Auction implements Runnable{
     }
 
     public Boolean request_bid(){
-        if(bid_flag)
+        if(bidFlag)
             return false;
         else{
-            bid_flag = true;
+            bidFlag = true;
             return true;
         }
     }
 
     public void finish_bid(){
-        if(bid_flag)
-            bid_flag = false;
+        if(bidFlag)
+            bidFlag = false;
         else
             System.out.println("Cannot finish bid that was not started!");
     }
 
     public Boolean get_flag(){
-        return bid_flag;
+        return bidFlag;
     }
 
     @Override

@@ -8,11 +8,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 public class AuctionService {
-    //TODO:
-    // create some users, an inventory and schedule some auctions
-    // make and run an auction
-    // log it after it s finished
-    // and print the logs
+
     private ArrayList<Evaluator> evaluators = new ArrayList<>();
     private ArrayList<Buyer> buyers = new ArrayList<>();
     private Inventory inv = Inventory.getInstance();
